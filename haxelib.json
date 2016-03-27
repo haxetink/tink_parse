@@ -1,0 +1,18 @@
+{
+	"name": "tink_parse",
+	"license": "MIT",
+	"tags": [
+		"tink",
+		"cross",
+		"parsing",
+    "parse"
+	],
+	"classPath": "src",
+	"description": "Tinkerbell Parser Library",
+	"contributors": [
+		"back2dos"
+	],
+	"releasenote": "Add support for rethrowing.",
+	"version": "1.0.0-rc.11",
+	"url": "http://haxetink.org/tink_parse"
+}
