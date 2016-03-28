@@ -5,14 +5,14 @@
 		"tink",
 		"cross",
 		"parsing",
-    "parse"
+		"parse"
 	],
 	"classPath": "src",
 	"description": "Tinkerbell Parser Library",
 	"contributors": [
 		"back2dos"
 	],
-	"releasenote": "Add support for rethrowing.",
-	"version": "1.0.0-rc.11",
+	"releasenote": "First release.",
+	"version": "0.0.0",
 	"url": "http://haxetink.org/tink_parse"
 }
