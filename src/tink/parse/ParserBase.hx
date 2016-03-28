@@ -3,11 +3,21 @@ package tink.parse;
 using StringTools;
 using tink.CoreApi;
 
+typedef ListSyntax = { 
+  ?start:StringSlice, 
+  end:StringSlice, 
+  sep:StringSlice, 
+  ?allowTrailing:Bool 
+ }
+
 class ParserBase<Pos, Error> {
   
   var source:StringSlice;
   var pos:Int;
   var max:Int;
+
+  function chomp(start, ?offset = 0)
+    return source.string.substring(start, pos + offset);
   
   function new(source:StringSlice) {
     this.source = source.string;
@@ -23,7 +33,6 @@ class ParserBase<Pos, Error> {
   inline function is(cond:Filter<Int>) 
     return pos < max && cond[source.fastGet(pos)];
   
-  
   inline function doReadWhile(cond:Filter<Int>)
     while (is(cond)) pos++;
     
@@ -31,18 +40,17 @@ class ParserBase<Pos, Error> {
     skipIgnored();
     var start = pos;
     doReadWhile(cond);
-    //if (pos > start)
-      //trace('>>>'+source[start...pos]+'<<<');
     return source[start...pos];
   }
   
   var lastSkip:Int;
-  function skipIgnored() {
+  function skipIgnored():Continue {
     while (lastSkip != pos) {
       lastSkip = pos;
       doSkipIgnored();
     }
     lastSkip = pos;
+    return null;
   }
   
   function doSkipIgnored() {}
@@ -50,17 +58,18 @@ class ParserBase<Pos, Error> {
   inline function isNext(s:StringSlice) 
     return source.hasSub(s, pos);
   
-  function allow(s) {
-    skipIgnored();
+  function allow(s:StringSlice) 
+    return skipIgnored() + allowHere(s);
+  
+  function allowHere(s:StringSlice) 
     return
       if (isNext(s)) {
         pos += s.length;
         true;
       }
       else false;
-  }
   
-  function expect(s):Expectation {
+  function expect(s:StringSlice):Continue {
     if (!allow(s))
       die('expected $s');
     return null;
@@ -93,7 +102,7 @@ class ParserBase<Pos, Error> {
       pos: makePos(start, pos),
       bytesRead: pos - start
     }
-  }  
+  } 
   
   function done() {
     skipIgnored();
@@ -109,26 +118,29 @@ class ParserBase<Pos, Error> {
   function doMakePos(from:Int, to:Int):Pos 
     return throw 'ni';
     
-  function parseList<A>(reader:Void->A, settings: { ?start:String, end:String, sep:String, ?allowTrailing:Bool } ):Array<A> {
-    if (settings.start != null && !allow(settings.start)) return [];
-    
-    if (allow(settings.end)) return [];
-    
-    var ret = [reader()];
-    
+  function parseRepeatedly(reader:Void->Void, settings:ListSyntax):Void {
+    if (settings.start != null && !allow(settings.start)) return;
+    if (allow(settings.end)) return;
+    reader();
     while (allow(settings.sep)) {
       if (settings.allowTrailing && allow(settings.end))
-        return ret;
-      ret.push(reader());
+        return;
+      reader();
     }
     
     expect(settings.end);
+  }
+  
+  function parseList<A>(reader:Void->A, settings):Array<A> {
+    var ret = [];
+    parseRepeatedly(function () ret.push(reader()), settings);
     return ret;
   }    
+  
 }
 
-abstract Expectation(Dynamic) {
-  @:commutative @:op(a+b) 
-  static inline function then<A>(e:Expectation, a:A):A 
+abstract Continue(Dynamic) {
+  @:commutative @:op(a+b)
+  static inline function then<A>(e:Continue, a:A):A 
     return a;
 }
