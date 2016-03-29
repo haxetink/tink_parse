@@ -19,10 +19,10 @@ class ParserBase<Pos, Error> {
   function chomp(start, ?offset = 0)
     return source.string.substring(start, pos + offset);
   
-  function new(source:StringSlice) {
+  function init(source:StringSlice) {
     this.source = source.string;
     this.max = source.end;
-    this.pos = source.start;
+    this.pos = source.start;    
   }
   
   inline function upNext(cond:Filter<Int>) {
