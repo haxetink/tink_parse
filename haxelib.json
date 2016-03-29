@@ -14,5 +14,8 @@
 	],
 	"releasenote": "First release.",
 	"version": "0.0.1",
-	"url": "http://haxetink.org/tink_parse"
+	"url": "http://haxetink.org/tink_parse",
+  "dependencies": {
+    "tink_core": ""
+  }
 }
