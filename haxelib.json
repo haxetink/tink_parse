@@ -12,10 +12,10 @@
 	"contributors": [
 		"back2dos"
 	],
-	"releasenote": "First release.",
-	"version": "0.0.1",
+	"releasenote": "Small refactoring.",
+	"version": "0.0.2",
 	"url": "http://haxetink.org/tink_parse",
-  "dependencies": {
-    "tink_core": ""
-  }
+	"dependencies": {
+		"tink_core": ""
+	}
 }
