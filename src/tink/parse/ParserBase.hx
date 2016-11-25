@@ -75,6 +75,12 @@ class ParserBase<Pos, Error> {
     return null;
   }
   
+  function expectHere(s:StringSlice):Continue {
+    if (!allowHere(s))
+      die('expected $s');
+    return null;
+  }
+  
   function upto(end:StringSlice, ?addEnd:Bool)
     return 
       switch source.indexOf(end, pos) {
