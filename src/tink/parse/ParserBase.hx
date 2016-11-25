@@ -17,12 +17,12 @@ class ParserBase<Pos, Error> {
   var max:Int;
 
   function chomp(start, ?offset = 0)
-    return source.string.substring(start, pos + offset);
+    return source[start...pos + offset];
   
-  function init(source:StringSlice) {
-    this.source = source.string;
-    this.max = source.end;
-    this.pos = source.start;    
+  public function new(source:StringSlice) {
+    this.source = source;
+    this.max = source.length;
+    this.pos = 0;    
   }
   
   inline function upNext(cond:Filter<Int>) {
@@ -86,8 +86,10 @@ class ParserBase<Pos, Error> {
           Success(ret);
       }
     
-  function die(message:String):Dynamic
-    return throw makeError(message, makePos(pos, pos + 1));
+  function die(message:String, ?range:IntIterator):Dynamic {
+    if (range == null) range = pos...pos + 1;
+    return throw makeError(message, @:privateAccess makePos(range.min, range.max));
+  }
   
   function makeError(message:String, pos:Pos):Error 
     return throw 'ni';
@@ -141,6 +143,6 @@ class ParserBase<Pos, Error> {
 
 abstract Continue(Dynamic) {
   @:commutative @:op(a+b)
-  static inline function then<A>(e:Continue, a:A):A 
+  @:extern static inline function then<A>(e:Continue, a:A):A 
     return a;
 }

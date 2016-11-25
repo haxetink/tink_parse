@@ -2,7 +2,6 @@ package tink.parse;
 
 using StringTools;
 
-
 private class Data {
   
   public var string(default, null):String;
@@ -129,13 +128,13 @@ abstract StringSlice(Data) from Data to Data {
   }
   
   @:commutative @:op(a == b) 
-  static inline function equalsString(slice:StringSlice, string:String) 
+  static function equalsString(slice:StringSlice, string:String) 
     return 
       if (string == null || string.length != slice.length) false;
       else isEqual((slice : Data).string, (slice : Data).start, (slice : Data).length, string, 0, string.length);
   
   @:op(a == b) 
-  static inline function equals(a:StringSlice, b:StringSlice) 
+  static function equals(a:StringSlice, b:StringSlice) 
     return 
       a.length == b.length && a.startsWith(b);
 }
