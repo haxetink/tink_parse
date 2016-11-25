@@ -12,8 +12,8 @@
 	"contributors": [
 		"back2dos"
 	],
-	"releasenote": "Some minor improvements.",
-	"version": "0.1.0",
+	"releasenote": "Add expectHere.",
+	"version": "0.1.1",
 	"url": "http://haxetink.org/tink_parse",
 	"dependencies": {
 		"tink_core": ""
