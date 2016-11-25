@@ -12,8 +12,8 @@
 	"contributors": [
 		"back2dos"
 	],
-	"releasenote": "Small refactoring.",
-	"version": "0.0.2",
+	"releasenote": "Some minor improvements.",
+	"version": "0.1.0",
 	"url": "http://haxetink.org/tink_parse",
 	"dependencies": {
 		"tink_core": ""
