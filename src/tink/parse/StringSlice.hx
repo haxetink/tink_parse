@@ -33,7 +33,9 @@ abstract StringSlice(Data) from Data to Data {
   public function new(string:String, start, end) {
     inline function val(i:Int)
       return 
-        if (i < 0) 
+        if (i == string.length)
+          i;
+        else if (i < 0) 
           i % string.length + string.length;
         else
           i % string.length;
