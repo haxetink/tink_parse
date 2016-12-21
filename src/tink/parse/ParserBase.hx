@@ -91,6 +91,30 @@ class ParserBase<Pos, Error> {
           pos = v + end.length;
           Success(ret);
       }
+      
+  function first(a:Array<String>, before) {
+    var ret = Failure(makeError('Failed to find either of ${a.join(",")}', makePos(pos, pos))),
+        min = max;
+        
+    for (s in a) 
+      switch source.indexOf(s, pos) {
+        case -1:
+        case v:
+          if (v < min) {
+            min = v;
+            ret = Success(s);
+          }
+      }
+    
+   
+    switch ret {
+      case Success(v):
+        before(source[pos...min]);
+        pos = min + v.length;
+      default:
+    }
+    return ret;
+  }
     
   function die(message:String, ?range:IntIterator):Dynamic {
     if (range == null) range = pos...pos + 1;
