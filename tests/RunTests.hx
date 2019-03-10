@@ -1,8 +1,7 @@
 package;
 
-import haxe.crypto.Base64;
-import haxe.io.Bytes;
 import haxe.unit.TestRunner;
+import tink.parse.ParserBase;
 
 class RunTests { 
 

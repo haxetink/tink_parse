@@ -28,6 +28,6 @@ class ExprReporter implements ReporterObject<Position, Error> {
     return new Error(message, pos);
 
   public function makePos(from:Int, to:Int):Position {
-    return #if macro haxe.macro.Context.makePos #end({ min: from, max: to, file: file });
+    return #if macro haxe.macro.Context.makePosition #end({ min: from, max: to, file: file });
   }
 }

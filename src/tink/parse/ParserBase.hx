@@ -21,7 +21,7 @@ class ParserBase<Pos, Error> {
   function chomp(start, ?offset = 0)
     return source[start...pos + offset];
   
-  public function new(source:StringSlice, ?reporter, ?offset = 0) {
+  public function new(source:StringSlice, reporter, ?offset = 0) {
     this.source = source;
     this.max = source.length;
     this.pos = 0;
@@ -29,18 +29,18 @@ class ParserBase<Pos, Error> {
     this.offset = offset;
   }
   
-  inline function upNext(cond:Filter<Int>) {
+  inline function upNext(cond:Char) {
     skipIgnored();
     return is(cond);
   }
 
-  inline function is(cond:Filter<Int>) 
+  inline function is(cond:Char) 
     return pos < max && cond[source.fastGet(pos)];
   
-  inline function doReadWhile(cond:Filter<Int>)
+  inline function doReadWhile(cond:Char)
     while (is(cond)) pos++;
     
-  inline function readWhile(cond:Filter<Int>) {
+  inline function readWhile(cond:Char) {
     skipIgnored();
     var start = pos;
     doReadWhile(cond);
