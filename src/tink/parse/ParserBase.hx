@@ -8,21 +8,25 @@ typedef ListSyntax = {
   end:StringSlice, 
   sep:StringSlice, 
   ?allowTrailing:Bool 
- }
+}
 
 class ParserBase<Pos, Error> {
   
+  var reporter:Reporter<Pos, Error>;
   var source:StringSlice;
   var pos:Int;
   var max:Int;
+  var offset:Int;
 
   function chomp(start, ?offset = 0)
     return source[start...pos + offset];
   
-  public function new(source:StringSlice) {
+  public function new(source:StringSlice, ?reporter, ?offset = 0) {
     this.source = source;
     this.max = source.length;
-    this.pos = 0;    
+    this.pos = 0;
+    this.reporter = reporter;
+    this.offset = offset;
   }
   
   inline function upNext(cond:Filter<Int>) {
@@ -121,9 +125,6 @@ class ParserBase<Pos, Error> {
     return throw makeError(message, @:privateAccess makePos(range.min, range.max));
   }
   
-  function makeError(message:String, pos:Pos):Error 
-    return throw 'ni';
-  
   function read<A>(reader:Void->A) {
     skipIgnored();
     var start = pos,
@@ -144,11 +145,11 @@ class ParserBase<Pos, Error> {
   function reject(s:StringSlice)
     throw makeError('unexpected $s', makePos(s.start, s.end));
   
+  inline function makeError(message:String, pos:Pos)
+    return reporter.makeError(message, pos);
+
   inline function makePos(from:Int, ?to:Int):Pos
-    return doMakePos(from, if (to == null) from + 1 else to);
-    
-  function doMakePos(from:Int, to:Int):Pos 
-    return throw 'ni';
+    return reporter.makePos(offset + from, offset + if (to == null) from + 1 else to);
     
   function parseRepeatedly(reader:Void->Void, settings:ListSyntax):Void {
     if (settings.start != null && !allow(settings.start)) return;
