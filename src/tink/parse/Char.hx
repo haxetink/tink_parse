@@ -13,13 +13,15 @@ abstract Char(Rep) from Rep {
   @:arrayAccess public inline function matches(char:Int)
     return #if tink_parse_unicode this.matches(char) #else this[char] #end;
   
-  @:from static function ofRange(i:IntIterator):Char {
+  @:from static function ofRange(i:IntIterator):Char @:privateAccess {
     #if tink_parse_unicode
-      return new MatchRange(@:privateAccess i.min, @:privateAccess i.max);
+      return new MatchRange(i.min, i.max);
     #else
-      var ret = new Rep(256);
+      var ret = new Rep(0x100);
+      if (i.max > 0x100)
+        i = i.min ... 0x100;
       for (c in i)
-        ret[c] = true;//TODO: in theory we might want a bounds check here
+        ret[c] = true;
       return ret;
     #end
   }
@@ -28,7 +30,7 @@ abstract Char(Rep) from Rep {
     #if tink_parse_unicode
       return function (c) return chars.indexOf(c) != -1;
     #else
-      var ret = new Rep(256);
+      var ret = new Rep(0x100);
       for (c in chars)
         ret[c] = true;//TODO: in theory we might want a bounds check here
       return ret;
@@ -39,7 +41,7 @@ abstract Char(Rep) from Rep {
     #if tink_parse_unicode
       return function (c) return s.indexOf(String.fromCharCode(c)) != -1;
     #else
-      var ret = new Rep(256);
+      var ret = new Rep(0x100);
       for (pos in 0...s.length)
         ret[s.charCodeAt(pos)] = true;//TODO: in theory we might want a bounds check here
       return ret;
@@ -50,7 +52,7 @@ abstract Char(Rep) from Rep {
     #if tink_parse_unicode
       return new MatchPredicate(p);
     #else
-      var ret = new Rep(256);
+      var ret = new Rep(0x100);
       for (c in 0...ret.length)
         ret[c] = p(c);
       return ret;
