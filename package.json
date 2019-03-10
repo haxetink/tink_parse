@@ -1,0 +1,10 @@
+{
+	"name": "tink_parse",
+	"scripts": {
+		"postinstall": "lix download",
+		"test": "lix run travix node -lib hx3compat"
+	},
+	"dependencies": {
+		"lix": "^15.3.5"
+	}
+}

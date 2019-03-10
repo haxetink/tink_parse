@@ -1,0 +1,3 @@
+-D tink_parse
+-cp src
+-lib tink_core
