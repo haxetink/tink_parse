@@ -34,8 +34,11 @@ class ParserBase<Pos, Error> {
     return is(cond);
   }
 
+  inline function current()
+    return source.fastGet(pos);
+
   inline function is(cond:Char) 
-    return pos < max && cond[source.fastGet(pos)];
+    return pos < max && cond[current()];
   
   inline function doReadWhile(cond:Char)
     while (is(cond)) pos++;
