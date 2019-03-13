@@ -64,12 +64,9 @@ abstract StringSlice(Data) from Data to Data {
     
   public function wrap(index:Int):Int
     return 
-      if (this.length == 0) 0;
-      else
         if (index < 0) 
-          (index % this.length) + this.length 
-        else 
-          index % this.length;
+          index + this.length;
+        else index;
   
   @:arrayAccess public inline function get(index:Int):Int 
     return fastGet(wrap(index));
