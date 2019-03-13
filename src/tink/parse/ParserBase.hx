@@ -145,8 +145,8 @@ class ParserBase<Pos, Error> {
     return pos >= max;
   }
 
-  function reject(s:StringSlice)
-    throw makeError('unexpected $s', makePos(s.start, s.end));
+  function reject(s:StringSlice):Dynamic
+    return throw makeError('unexpected $s', makePos(s.start, s.end));
   
   inline function makeError(message:String, pos:Pos)
     return reporter.makeError(message, pos);
