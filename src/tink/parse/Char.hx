@@ -88,6 +88,11 @@ abstract Char(Rep) from Rep {
     
   static public var DIGIT(default, null):Char = '0'.code ... '9'.code + 1;
 
+  static public var LINEFEED(default, null):Char = 10;
+  static public var CARRIAGE(default, null):Char = 13;
+
+  static public var LINEBREAK(default, null):Char = LINEFEED || CARRIAGE;
+
 }
 
 #if tink_parse_unicode
