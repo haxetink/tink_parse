@@ -88,10 +88,10 @@ class ParserBase<Pos, Error> {
     return null;
   }
 
-  function attempt<T>(s:Void->Option<T>) {
+  function attempt<S, F>(s:Void->Outcome<S, F>) {
     var start = this.pos;
     var ret = s();
-    if (ret == None) this.pos = start;
+    if (!ret.isSuccess()) this.pos = start;
     return ret;
   }
   
