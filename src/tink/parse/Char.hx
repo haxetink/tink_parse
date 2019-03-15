@@ -93,6 +93,9 @@ abstract Char(Rep) from Rep {
 
   static public var LINEBREAK(default, null):Char = LINEFEED || CARRIAGE;
 
+  static public function Char(c:Char)
+    return c;
+
 }
 
 #if tink_parse_unicode
