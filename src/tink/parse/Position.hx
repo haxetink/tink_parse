@@ -2,25 +2,12 @@ package tink.parse;
 
 #if macro
 import haxe.macro.Context;
-import haxe.macro.Expr.Position in PData;
-#else
-
-private class PData {
-  
-  public var min(default, null):Int;
-  public var max(default, null):Int;
-  public var file(default, null):String;
-  
-  public function new(min, max, file) {
-    this.min = min;
-    this.max = max;
-    this.file = file;
-  }
-}
 #end
-abstract Position(PData) {
+import haxe.macro.Expr.Position in PData;
+
+abstract Position(PData) from PData to PData {
   inline function getData()
-    return #if macro Context.getPosInfos #end (this)
+    return #if macro Context.getPosInfos #end (this);
       
   public var min(get, never):Int;
     inline function get_min()
@@ -35,6 +22,6 @@ abstract Position(PData) {
       return getData().file;
       
   public inline function new(min, max, file)
-    this = Context.makePosition( { min: min, max: max, file: file } );}
+    this = #if macro Context.makePosition #end( { min: min, max: max, file: file } );
   
 }

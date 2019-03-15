@@ -1,6 +1,7 @@
 package tink.parse;
 
 import haxe.macro.Expr;
+import tink.parse.Position;
 
 @:forward
 abstract Reporter<Pos, Error>(ReporterObject<Pos, Error>) 
@@ -27,7 +28,7 @@ class ExprReporter implements ReporterObject<Position, Error> {
   public function makeError(message:String, pos:Position):Error
     return new Error(message, pos);
 
-  public function makePos(from:Int, to:Int):Position {
-    return #if macro haxe.macro.Context.makePosition #end({ min: from, max: to, file: file });
-  }
+  public function makePos(from:Int, to:Int):Position 
+    return new Position(from, to, file);
+
 }
