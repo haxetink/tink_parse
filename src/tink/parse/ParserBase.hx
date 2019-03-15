@@ -94,6 +94,11 @@ class ParserBase<Pos, Error> {
     if (!ret.isSuccess()) this.pos = start;
     return ret;
   }
+
+  function withPosition<T>(f:Void->T):Located<T, Pos> {
+    var start = pos;
+    return { value: f(), pos: makePos(start, pos) };
+  }
   
   function upto(end:StringSlice, ?addEnd:Bool)
     return 
