@@ -87,6 +87,13 @@ class ParserBase<Pos, Error> {
       die('expected $s');
     return null;
   }
+
+  function attempt<T>(s:Void->Option<T>) {
+    var start = this.pos;
+    var ret = s();
+    if (ret == None) this.pos = start;
+    return ret;
+  }
   
   function upto(end:StringSlice, ?addEnd:Bool)
     return 
