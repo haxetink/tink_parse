@@ -95,7 +95,7 @@ class ParserBase<Pos, Error> {
     return ret;
   }
 
-  function withPosition<T>(f:Void->T):Located<T, Pos> {
+  function located<T>(f:Void->T):Located<T, Pos> {
     var start = pos;
     return { value: f(), pos: makePos(start, pos) };
   }
