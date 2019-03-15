@@ -37,16 +37,41 @@ abstract Char(Rep) from Rep {
     #end
   }
 
-  @:from static function fromString(s:String):Char {
-    #if tink_parse_unicode
-      return function (c) return s.indexOf(String.fromCharCode(c)) != -1;
-    #else
-      var ret = new Rep(0x100);
-      for (pos in 0...s.length)
-        ret[s.charCodeAt(pos)] = true;//TODO: in theory we might want a bounds check here
-      return ret;
-    #end
-  }
+  static var byInt = new Map<Int, Char>();
+
+  @:from static function ofCode(c:Int):Char 
+    return switch byInt[c] {
+      case null:  
+        byInt[c] =
+          #if tink_parse_unicode
+            new MatchCode(c);
+          #else
+            {
+              var ret = new Rep(0x100);
+              ret[c] = true;//TODO: in theory we might want a bounds check here
+              ret;
+            }
+          #end
+      case v: v;
+    }
+
+  static var byString = new Map<String, Char>();
+  @:from static function fromString(s:String):Char 
+    return switch byString[s] {
+      case null:
+        byString[s] = 
+          #if tink_parse_unicode
+            function (c) return s.indexOf(String.fromCharCode(c)) != -1;
+          #else
+            {
+              var ret = new Rep(0x100);
+              for (pos in 0...s.length)
+                ret[s.charCodeAt(pos)] = true;//TODO: in theory we might want a bounds check here
+              ret;
+            }
+          #end
+      case v: v;
+    }
 
   @:from static inline function ofPredicate(p:Int->Bool):Char {
     #if tink_parse_unicode
@@ -70,9 +95,6 @@ abstract Char(Rep) from Rep {
   @:commutative
   @:op(a || b) static inline function orString(a:Char, s:String):Char
     return or(a, s);
-
-  @:from static inline function ofCode(a:Int):Char 
-    return function (v) return v == a;
     
   @:op(a && b) static inline function and(a:Char, b:Char):Char
     return function (value) return a[value] && b[value];
@@ -110,6 +132,15 @@ private class MatchPredicate implements Matcher {
 
   public function matches(char)
     return predicate(char); 
+}
+
+private class MatchCode implements Matcher {
+  var code:Int;
+  public function new(code)
+    this.code = code;
+
+  public function matches(char)
+    return char == code;
 }
 private class MatchRange implements Matcher {
   
