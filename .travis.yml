@@ -32,8 +32,8 @@ script:
   - lix run travix node
   # - lix run travix flash
   # - lix run travix java
-  # - lix run travix cpp
-  - lix run travix cs
+  # - lix run travix cs
+  - lix run travix cpp
   - lix run travix php
 
 # jobs:
