@@ -12,8 +12,8 @@
 	"contributors": [
 		"back2dos"
 	],
-	"releasenote": "Minor additions and bug fixes.",
-	"version": "0.2.0",
+	"releasenote": "Unicode support and other improvements.",
+	"version": "0.3.0",
 	"url": "http://haxetink.org/tink_parse",
 	"dependencies": {
 		"tink_core": ""
