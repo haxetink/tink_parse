@@ -19,11 +19,10 @@ interface ReporterObject<Pos, Error> {
 
 class ExprReporter implements ReporterObject<Position, Error> {
   
-  var file:String;
+  final file:String;
 
-  public function new(file) {
+  public function new(file) 
     this.file = file;
-  }
 
   public function makeError(message:String, pos:Position):Error
     return new Error(message, pos);

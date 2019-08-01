@@ -4,10 +4,15 @@ using StringTools;
 using tink.CoreApi;
 
 typedef ListSyntax = { 
-  ?start:StringSlice, 
-  end:StringSlice, 
-  sep:StringSlice, 
-  ?allowTrailing:Bool 
+  final ?start:StringSlice;
+  final end:StringSlice;
+  final ?sep:StringSlice;
+  final ?trailing:TrailingSeparator;
+}
+
+enum abstract TrailingSeparator(String) {
+  var Always;
+  var Never;
 }
 
 class ParserBase<Pos, Error> {
@@ -170,15 +175,28 @@ class ParserBase<Pos, Error> {
     
   function parseRepeatedly(reader:Void->Void, settings:ListSyntax):Void {
     if (settings.start != null && !allow(settings.start)) return;
-    if (allow(settings.end)) return;
-    reader();
-    while (allow(settings.sep)) {
-      if (settings.allowTrailing && allow(settings.end))
-        return;
-      reader();
+    switch settings.sep {
+      case null:
+        while (!allow(settings.end)) reader();
+      case sep:
+        if (allow(settings.end)) return;
+        while (true) {
+          reader();
+          switch settings.trailing {
+            case null:
+              var hasSep = allow(sep);
+              if (allow(settings.end)) return;
+              if (!hasSep)
+                die('expected ${sep} or ${settings.end}');
+            case Always:
+              expect(sep);
+              if (allow(settings.end)) return;
+            case Never:
+              if (allow(settings.end)) return;
+              expect(sep);
+          }
+        }
     }
-    
-    expect(settings.end);
   }
   
   function parseList<A>(reader:Void->A, settings):Array<A> {
