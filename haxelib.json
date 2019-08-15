@@ -1,21 +1,21 @@
 {
 	"name": "tink_parse",
-	"license": "MIT",
+	"description": "Tinkerbell Parser Library",
+	"classPath": "src",
+	"dependencies": {
+		"tink_core": ""
+	},
+	"url": "http://haxetink.org/tink_parse",
+	"contributors": [
+		"back2dos"
+	],
+	"version": "0.3.1",
+	"releasenote": "Revise list parsing and allow specifying slice rejection reason.",
 	"tags": [
 		"tink",
 		"cross",
 		"parsing",
 		"parse"
 	],
-	"classPath": "src",
-	"description": "Tinkerbell Parser Library",
-	"contributors": [
-		"back2dos"
-	],
-	"releasenote": "Unicode support and other improvements.",
-	"version": "0.3.0",
-	"url": "http://haxetink.org/tink_parse",
-	"dependencies": {
-		"tink_core": ""
-	}
+	"license": "MIT"
 }
