@@ -4,15 +4,15 @@ using StringTools;
 using tink.CoreApi;
 
 typedef ListSyntax = { 
-  final ?start:StringSlice;
-  final end:StringSlice;
-  final ?sep:StringSlice;
-  final ?trailing:TrailingSeparator;
+  @:optional var start(default, never):StringSlice;
+  var end(default, never):StringSlice;
+  @:optional var sep(default, never):StringSlice;
+  @:optional var trailing(default, never):TrailingSeparator;
 }
 
-enum abstract TrailingSeparator(String) {
-  var Always;
-  var Never;
+@:enum abstract TrailingSeparator(String) {
+  var Always = "Always";
+  var Never = "Never";
 }
 
 class ParserBase<Pos, Error> {

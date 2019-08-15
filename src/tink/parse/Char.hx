@@ -102,18 +102,18 @@ abstract Char(Rep) from Rep {
   @:op(!b) static inline function not(a:Char):Char
     return function (value) return !a[value];
 
-  static public final WHITE:Char = [9, 10, 11, 12, 13, 32];//TODO: for unicode this should include all sorts of other stuff
+  static public var WHITE(default, never):Char = [9, 10, 11, 12, 13, 32];//TODO: for unicode this should include all sorts of other stuff
   
-  static public final LOWER:Char = 'a'.code ... 'z'.code + 1;
+  static public var LOWER(default, never):Char = 'a'.code ... 'z'.code + 1;
 
-  static public final UPPER:Char = 'A'.code ... 'Z'.code + 1;
+  static public var UPPER(default, never):Char = 'A'.code ... 'Z'.code + 1;
     
-  static public final DIGIT:Char = '0'.code ... '9'.code + 1;
+  static public var DIGIT(default, never):Char = '0'.code ... '9'.code + 1;
 
-  static public final LINEFEED:Char = 10;
-  static public final CARRIAGE:Char = 13;
+  static public var LINEFEED(default, never):Char = 10;
+  static public var CARRIAGE(default, never):Char = 13;
 
-  static public final LINEBREAK:Char = LINEFEED || CARRIAGE;
+  static public var LINEBREAK(default, never):Char = LINEFEED || CARRIAGE;
 
   static public function Char(c:Char)
     return c;
