@@ -70,6 +70,11 @@ class ParserBase<Pos, Error> {
   inline function isNext(s:StringSlice)
     return source.hasSub(s, pos);
 
+  inline function junk(count = 1) {
+    pos += count;
+    if (pos > max) pos = max;
+  }
+
   function allow(s:StringSlice)
     return skipIgnored() + allowHere(s);
 
