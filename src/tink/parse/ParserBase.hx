@@ -34,21 +34,36 @@ class ParserBase<Pos, Error> {
     this.offset = offset;
   }
 
-  inline function upNext(cond:Char) {
+  /**
+   * skip ignored characters, then match the character against the specified condition, without consuming it
+   */
+  inline function upNext(cond:Char):Bool {
     skipIgnored();
     return is(cond);
   }
 
-  inline function current()
+  /**
+   * return current character, without consuming it
+   */
+  inline function current():Int
     return source.fastGet(pos);
 
-  inline function is(cond:Char)
+  /**
+   * check if current character matches the specified condition, without consuming it
+   */
+  inline function is(cond:Char):Bool
     return pos < max && cond[current()];
-
-  inline function doReadWhile(cond:Char)
+  
+  /**
+   * advance while character fulfills the specified condition
+   */
+  inline function doReadWhile(cond:Char):Void
     while (is(cond)) pos++;
 
-  inline function readWhile(cond:Char) {
+  /**
+   * skip ignored characters, advance while character fulfills the specified condition, and return the scanned string
+   */
+  inline function readWhile(cond:Char):StringSlice {
     skipIgnored();
     var start = pos;
     doReadWhile(cond);
@@ -56,6 +71,10 @@ class ParserBase<Pos, Error> {
   }
 
   var lastSkip:Int;
+  
+  /**
+   * skip ignored values
+   */
   function skipIgnored():Continue {
     while (lastSkip != pos) {
       lastSkip = pos;
@@ -67,18 +86,30 @@ class ParserBase<Pos, Error> {
 
   function doSkipIgnored() {}
 
-  inline function isNext(s:StringSlice)
+  /**
+   * check if current position matches the specifed string, without consuming it
+   */
+  inline function isNext(s:StringSlice):Bool
     return source.hasSub(s, pos);
-
-  inline function junk(count = 1) {
+  
+  /**
+   * skip the specified number of characters
+   */
+  inline function junk(count = 1):Void {
     pos += count;
     if (pos > max) pos = max;
   }
 
-  function allow(s:StringSlice)
+  /**
+   * skip ignored characters, then match the specified string, and consume it if matched
+   */
+  function allow(s:StringSlice):Bool
     return skipIgnored() + allowHere(s);
 
-  function allowHere(s:StringSlice)
+  /**
+   * match the specified string, and consume it if matched
+   */
+  function allowHere(s:StringSlice):Bool
     return
       if (isNext(s)) {
         pos += s.length;
@@ -86,12 +117,20 @@ class ParserBase<Pos, Error> {
       }
       else false;
 
+  /**
+   * skip ignored characters, then match the specified string, and throw if doesn't match
+   * use with operator `+` to produce a value
+   */
   function expect(s:StringSlice):Continue {
     if (!allow(s))
       die('expected $s');
     return null;
   }
 
+  /**
+   * match the specified string, and throw if doesn't match
+   * use with operator `+` to produce a value
+   */
   function expectHere(s:StringSlice):Continue {
     if (!allowHere(s))
       die('expected $s');
@@ -100,10 +139,8 @@ class ParserBase<Pos, Error> {
 
   /**
    * produce an outcome and rewinds only in case of failure
-   * @param f 
-   * @return Located<T, Pos>
    */
-  function attempt<S, F>(s:Void->Outcome<S, F>) {
+  function attempt<S, F>(s:Void->Outcome<S, F>):Outcome<S, F> {
     var start = this.pos;
     var ret = s();
     if (!ret.isSuccess()) this.pos = start;
@@ -111,21 +148,25 @@ class ParserBase<Pos, Error> {
   }
 
   /**
-   * produce a value and then rewinds position
-   * @param f 
-   * @return Located<T, Pos>
+   * produce a value and then rewinds position, throw to abort
    */
-  function lookahead<T>(fn:Void->T) {
+  function lookahead<T>(fn:Void->T):T {
     var start = pos;
     return Error.tryFinally(fn, function () pos = start);
   }
-
+  
+  /**
+   * produce a value and include its position
+   */
   function located<T>(f:Void->T):Located<T, Pos> {
     var start = pos;
     return { value: f(), pos: makePos(start, pos) };
   }
 
-  function upto(end:StringSlice, ?addEnd:Bool)
+  /**
+   * consume and return string upto `end`, set `addEnd = true` to include `end` itself
+   */
+  function upto(end:StringSlice, ?addEnd:Bool):Outcome<StringSlice, Error>
     return
       switch source.indexOf(end, pos) {
         case -1:
@@ -160,6 +201,9 @@ class ParserBase<Pos, Error> {
     return ret;
   }
 
+  /**
+   * throw an error, optionally include a position (default at current character)
+   */
   function die(message:String, ?range:IntIterator):Dynamic {
     if (range == null) range = pos...pos + 1;
     return throw makeError(message, @:privateAccess makePos(range.min, range.max));
@@ -177,7 +221,10 @@ class ParserBase<Pos, Error> {
     }
   }
 
-  function done() {
+  /**
+   * skip ignored characters and check if reached the end
+   */
+  function done():Bool {
     skipIgnored();
     return pos >= max;
   }
