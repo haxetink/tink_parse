@@ -61,7 +61,7 @@ class ParserBase<Pos, Error> {
     while (is(cond)) pos++;
 
   /**
-   * skip ignored characters, advance while character fulfills the specified condition, and return the scanned string
+   * skip ignored characters, then advance while character fulfills the specified condition, and return the scanned string
    */
   inline function readWhile(cond:Char):StringSlice {
     skipIgnored();
@@ -138,7 +138,7 @@ class ParserBase<Pos, Error> {
   }
 
   /**
-   * produce an outcome and rewinds only in case of failure
+   * produce an outcome and rewind only in case of failure
    */
   function attempt<S, F>(s:Void->Outcome<S, F>):Outcome<S, F> {
     var start = this.pos;
@@ -148,7 +148,7 @@ class ParserBase<Pos, Error> {
   }
 
   /**
-   * produce a value and then rewinds position, throw to abort
+   * produce a value and then rewind position (note: throw in the generator function to abort)
    */
   function lookahead<T>(fn:Void->T):T {
     var start = pos;
