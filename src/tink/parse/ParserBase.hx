@@ -98,6 +98,11 @@ class ParserBase<Pos, Error> {
     return null;
   }
 
+  /**
+   * produce an outcome and rewinds only in case of failure
+   * @param f 
+   * @return Located<T, Pos>
+   */
   function attempt<S, F>(s:Void->Outcome<S, F>) {
     var start = this.pos;
     var ret = s();
@@ -105,6 +110,11 @@ class ParserBase<Pos, Error> {
     return ret;
   }
 
+  /**
+   * produce a value and then rewinds position
+   * @param f 
+   * @return Located<T, Pos>
+   */
   function lookahead<T>(fn:Void->T) {
     var start = pos;
     return Error.tryFinally(fn, function () pos = start);
