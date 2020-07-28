@@ -53,7 +53,7 @@ class ParserBase<Pos, Error> {
    */
   inline function is(cond:Char):Bool
     return pos < max && cond[current()];
-  
+
   /**
    * advance while character fulfills the specified condition
    */
@@ -71,7 +71,7 @@ class ParserBase<Pos, Error> {
   }
 
   var lastSkip:Int;
-  
+
   /**
    * skip ignored values
    */
@@ -91,7 +91,7 @@ class ParserBase<Pos, Error> {
    */
   inline function isNext(s:StringSlice):Bool
     return source.hasSub(s, pos);
-  
+
   /**
    * skip the specified number of characters
    */
@@ -154,7 +154,7 @@ class ParserBase<Pos, Error> {
     var start = pos;
     return Error.tryFinally(fn, function () pos = start);
   }
-  
+
   /**
    * produce a value and include its position
    */
@@ -275,7 +275,13 @@ class ParserBase<Pos, Error> {
 }
 
 abstract Continue(Dynamic) {
-  @:commutative @:op(a+b)
+
+  @:op(a+b)
   @:extern static inline function then<A>(e:Continue, a:A):A
     return a;
+
+  @:op(a+b)
+  @:extern static inline function rthen<A>(a:A, e:Continue):A
+    return a;
+
 }
